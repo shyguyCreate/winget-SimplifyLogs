@@ -166,6 +166,7 @@ $newLogFile = "$env:USERPROFILE\Desktop\winget log.txt";
 #The file is created or overwritten with the new content from the logContent variable.
 Set-Content $newLogFile -Value $logContent;
 
+Write-Host "`nOpening new formatted log .txt file."
 #Opens the file.
 Invoke-Item $newLogFile;
 
