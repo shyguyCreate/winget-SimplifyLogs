@@ -26,5 +26,5 @@ Enter this in your powershell terminal.
 
 ### See also
 
-- [winget-ProgramList] (https://github.com/shyguyCreate/winget-ProgramList) - Basic understanding of where `winget list` search for programs.
-- [winget-GetProperties] (https://github.com/shyguyCreate/winget-GetProperties) - Transform `winget` output columns into real properties.
+- [winget-ProgramList](https://github.com/shyguyCreate/winget-ProgramList) - Basic understanding of where `winget list` search for programs.
+- [winget-GetProperties](https://github.com/shyguyCreate/winget-GetProperties) - Transform `winget` output columns into real properties.
