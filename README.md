@@ -22,7 +22,7 @@ Enter this in your powershell terminal.
 **Running process**
 1. Download the powershell script into your system.
 2. In a powershell terminal, `cd` into the script directory.
-3. Enter `. .\wingetProgramsList.ps1` in the terminal.
+3. Enter `. .\wingetMakeLogsEasier` in the terminal.
 
 ### See also
 
