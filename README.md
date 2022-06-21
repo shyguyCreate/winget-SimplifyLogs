@@ -2,12 +2,11 @@
 
 ## Description
 
-If you ever done `winget <command> --verbose-logs` and then take a look at the log created, you have probably noticed that this logs are not so easy to read.
+If you ever done `winget <command> --verbose-logs` and then look at the log created, you have probably noticed that these logs are not so easy to read.
 
-For me, logs repeat to many lines or contain to many details that do not really help you understand what is happening behind the curtains.
+For me, logs repeat too many lines or contain to many details that do not really help you understand what is happening behind the curtains.
 
-So, I decided to create this script to make logs more readable, basically what it does is remove what I consider unnecesary lines and format others in a way that you understand better what the deal is with all the information that it recopiles.
-You can easily see this difference just by taking a look at the size of the original log versus the one created by this script, is MegaBytes smaller.
+So, I decided to create this script to make logs more readable, what it does is remove what I consider unnecessary lines and format others in a way that you understand better what the deal is with all the information that it collects. You can easily see this difference just by looking at the size of the original log versus the one created by this script, is Megabytes smaller.
 
 ### Purpose
 
@@ -15,8 +14,8 @@ Make verbose logs more readable by helping understand the most important things 
 
 ### How to run it
 
-Make sure your system has permission for running scripts.
-Enter this in your powershell terminal.
+Make sure your system has permission for running scripts. Enter this in your powershell terminal.
+
 > Set-ExecutionPolicy RemoteSigned
 
 **Running process**
