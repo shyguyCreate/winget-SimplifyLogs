@@ -1,4 +1,4 @@
-# Make logs easier to understand (winget)
+# Simplify logs to help understand them (winget)
 
 ## Description
 
@@ -21,7 +21,7 @@ Make sure your system has permission for running scripts. Enter this in your pow
 **Running process**
 1. Download the powershell script into your system.
 2. In a powershell terminal, `cd` into the script directory.
-3. Enter `. .\wingetMakeLogsEasier` in the terminal.
+3. Enter `. .\wingetSimplifyLogs` in the terminal.
 
 ### See also
 
