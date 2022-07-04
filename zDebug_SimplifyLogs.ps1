@@ -47,39 +47,37 @@ function Get-FileListVerbose ([string] $logPathParam, [string] $logString, [stri
 {
     [string] $logFileVerbose = $null;
 
-    #Gets all the file names inside the logPathParam, files are sorted by LastWriteTime from bigger to smaller dates.
-    [array] $logFiles = Get-Item $logPathParam | Sort-Object LastWriteTime -Descending | Select-Object -ExpandProperty FullName;
+    #Gets all the file names inside the logPathParam, files are sorted by CreationTime from bigger to smaller dates.
+    [array] $logFiles = Get-Item $logPathParam | Where-Object CreationTime -ge (Get-Date).Date |
+                        Sort-Object CreationTime -Descending | Select-Object -ExpandProperty FullName;
     
-    #If there is no file, winget command is executted.
-    if ($null -eq $logFiles) { 
-        winget list -s winget --verbose-logs > $null; 
-        #After execution the new file is stored for return.
-        $logFileVerbose = Get-Item $logPath | Select-Object -ExpandProperty FullName;
-    } else {            
+    if ($null -ne $logFiles) {
         #Foreach file that exists.
-        foreach ($file in $logFiles) {
+        foreach ($file in $logFiles)
+        {
             #Get the first 9 lines of each.
             $contentForEach = Get-Content $file -TotalCount 9;
-            #Check for the indexLine that containd the string parameter.
-            $indexForEach = Get-IndexOfString $contentForEach -logString $logString;
-            #If nothing exists, it passes to the next item to avoid errors.
-            if ($null -eq $indexForEach) { continue; }
-            
-            #Check if the indexLine contains another string parameter.
-            [bool] $isListVerbose = $contentForEach[$indexForEach] -match $logMatch;
 
-            #If match is true, the file is passed for return, and the for loop is escaped.
-            if ($isListVerbose) { 
+            #Check for the indexLine that containd the string parameter.
+            $indexLineOfMatch = Get-IndexOfString $contentForEach -logString $logString;
+
+            #If nothing exists, it passes to the next item to avoid errors.
+            if ($null -eq $indexLineOfMatch) { continue; }
+            
+            #If the indexLine contains another string parameter, the file is return and the loop is escaped.
+            if ($contentForEach[$indexLineOfMatch] -match $logMatch) { 
                 $logFileVerbose = $file;
                 break; 
             }
         }
-        #After paasing through each file, if none of them matches then winget command is executed.
-        if (-not $isListVerbose) {
-            winget list -s winget --verbose-logs > $null;
-            #The new file is created, and it is obtain by LastWriteTime with the biggest date.
-            $logFileVerbose = Get-Item $logPathParam | Sort-Object LastWriteTime | Select-Object -ExpandProperty FullName -Last 1;
-        }
+    }
+    #If there is no file inside $logFiles or $logFileVerbose, winget command will be executted.
+    if ([string]::IsNullOrEmpty($logFileVerbose)) 
+    {
+        winget list -s winget --verbose-logs > $null;
+
+        #After execution, the new file is obtain by CreationTime with the biggest date and stored for return.
+        $logFileVerbose = Get-Item $logPathParam | Sort-Object CreationTime | Select-Object -ExpandProperty FullName -Last 1;
     }
     return $logFileVerbose;
 }
