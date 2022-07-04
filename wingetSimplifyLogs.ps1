@@ -28,12 +28,12 @@ function Get-LogContent-And-Clear-ExtraInfo ([string] $Path)
     return $logArray | Where-Object {$_ -ne ''};
 }
 
-function Get-IndexOfString ([array] $logArray, [string] $logString, $startIndex = 0)
+function Get-IndexOfString ([array] $logArray, [string] $logMatch, $startIndex = 0)
 {
     #Foreach line inside the array.
     for ($i = $startIndex; $i -lt $logArray.Length; $i++) {
         #Check for matches with parameter string.
-        if ($logArray[$i] -match $logString) {
+        if ($logArray[$i] -match $logMatch) {
             #When it tests true, the index will be return and the for loop will be escaped.
             $indexReturn = $i;
             break;
@@ -41,7 +41,7 @@ function Get-IndexOfString ([array] $logArray, [string] $logString, $startIndex 
     } return $indexReturn;
 }
 
-function Get-FileListVerbose ([string] $logPathParam, [string] $logString, [string] $logMatch)
+function Get-FileListVerbose ([string] $logPathParam, [string] $logMatch)
 {
     [string] $logFileVerbose = $null;
 
@@ -54,18 +54,15 @@ function Get-FileListVerbose ([string] $logPathParam, [string] $logString, [stri
         foreach ($file in $logFiles)
         {
             #Get the first 9 lines of each.
-            $contentForEach = Get-Content $file -TotalCount 9;
+            $contentForEach = Get-Content $file -TotalCount 5;
 
             #Check for the indexLine that containd the string parameter.
-            $indexLineOfMatch = Get-IndexOfString $contentForEach -logString $logString;
+            $indexLineOfMatch = Get-IndexOfString $contentForEach -logMatch $logMatch;
 
-            #If nothing exists, it passes to the next item to avoid errors.
-            if ($null -eq $indexLineOfMatch) { continue; }
-            
-            #If the indexLine contains another string parameter, the file is return and the loop is escaped.
-            if ($contentForEach[$indexLineOfMatch] -match $logMatch) { 
+            #If indexLine is not empty, the file is return and the loop is escaped.
+            if ($null -ne $indexLineOfMatch) {
                 $logFileVerbose = $file;
-                break; 
+                break;
             }
         }
     }
@@ -73,7 +70,6 @@ function Get-FileListVerbose ([string] $logPathParam, [string] $logString, [stri
     if ([string]::IsNullOrEmpty($logFileVerbose)) 
     {
         winget list -s winget --verbose-logs > $null;
-
         #After execution, the new file is obtain by CreationTime with the biggest date and stored for return.
         $logFileVerbose = Get-Item $logPathParam | Sort-Object CreationTime | Select-Object -ExpandProperty FullName -Last 1;
     }
@@ -145,10 +141,9 @@ $logPath = "$env:LOCALAPPDATA\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bb
 
 #Use of do..while only for error security purposes.
 do{
-    #This will return the file full Name inside the 'winget Logs folder'
-    #that matches the logMatch parameter inside the logString matched line.
+    #This will return the file full Name inside the 'winget Logs folder' that matches the logMatch parameter.
     [string] $logFile = Get-FileListVerbose -logPathParam $logPath `
-            -logString 'Command line Args:' -logMatch 'list\s+(-s\s+\w+\s+)?--verbose-logs$';
+            -logMatch 'Command line Args:.+list\s+((-s|--source)\s+\w+\s+)?--verbose-logs$';
 
 } while ($logFile -eq '')
 
